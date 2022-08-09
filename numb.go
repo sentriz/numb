@@ -123,20 +123,20 @@ func main() {
 	rt := runtime.NewRuntime()
 	rt.LoadBuiltins()
 
+	flag.Parse()
+
 	rcfile := path.Join(os.Getenv("HOME"), ".numbrc")
 	if info, err := os.Stat(rcfile); err == nil && info.Mode().IsRegular() {
 		rt.LoadFile(rcfile)
 	}
 
 	if flag.NArg() == 1 {
-		path := flag.Arg(0)
-		file, err := os.Open(path)
+		line, err := rt.Eval(flag.Arg(0))
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
-		defer file.Close()
-		read(rt, file)
+		fmt.Println(line)
 		return
 	}
 
